@@ -11,7 +11,7 @@ class Gayrate(commands.Cog):
         if user == None:
             user = ctx.message.author
         if user.id in [757991078296027238, 476384449362264074]:
-            with open('../media/gaygif.gif','rb') as f:
+            with open('media/gaygif.gif','rb') as f:
                 em = discord.Embed(title='How Gay Are They', description=f'{user.mention} is mega gay!', colour=discord.Color.purple())
                 picture = discord.File(f)
                 return await ctx.send(embed=em,file=picture)
