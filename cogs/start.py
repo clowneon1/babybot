@@ -20,7 +20,7 @@ class OnReady(commands.Cog):
         for guild in self.bot.guilds:
             for vc in guild.voice_channels:
                 if vc.id in config.total_members_vc_ids and vc.name != f'{guild.member_count} members':
-                    await vc.edit(name = f'{guild.member_count} members')
+                    await vc.edit(name = f'Members: {guild.member_count}')
                     break
 
     @tasks.loop(seconds=10)
@@ -31,7 +31,7 @@ class OnReady(commands.Cog):
                     members = guild.members
                     onlineMembers = [member for member in members if member.status in [discord.Status.online, discord.Status.idle, discord.Status.do_not_disturb]]
                     if vc.name != f'{len(onlineMembers)} online members':
-                        await vc.edit(name = f'{len(onlineMembers)} online members')
+                        await vc.edit(name = f'Online Members: {len(onlineMembers)} online members')
 
     @tasks.loop(seconds=30)
     async def statusLooper(self):
