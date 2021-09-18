@@ -1,4 +1,5 @@
 from discord.ext import commands
+from utils import config
 import discord
 import random
 
@@ -10,11 +11,11 @@ class Gayrate(commands.Cog):
     async def gayrate(self, ctx, user : discord.Member = None):
         if user == None:
             user = ctx.message.author
-        if user.id in [757991078296027238, 476384449362264074]:
+        if user.id in config.mega_gay_user_ids:
             with open('media/gaygif.gif','rb') as f:
                 em = discord.Embed(title='How Gay Are They', description=f'{user.mention} is mega gay!', colour=discord.Color.purple())
                 picture = discord.File(f)
-                return await ctx.send(embed=em,file=picture)
+                return await ctx.send(embed=em, file=picture)
 
         gayLevel = random.randint(0,100)
         em = discord.Embed(title='How Gay Are They', description=f'{user.mention} is {gayLevel}% gay.', colour=discord.Color.purple())
