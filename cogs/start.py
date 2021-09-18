@@ -30,7 +30,7 @@ class OnReady(commands.Cog):
                 if vc.id in config.online_members_vc_ids:
                     members = guild.members
                     onlineMembers = [member for member in members if member.status in [discord.Status.online, discord.Status.idle, discord.Status.do_not_disturb]]
-                    if vc.name != f'Online Members: {len(onlineMembers)}':
+                    if vc.id in config.online_members_vc_ids and vc.name != f'Online Members: {len(onlineMembers)}':
                         await vc.edit(name = f'Online Members: {len(onlineMembers)}')
 
     @tasks.loop(seconds=30)
