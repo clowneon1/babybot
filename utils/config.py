@@ -21,3 +21,5 @@ welcome_roles = {
 prefix = "."
 
 starting_activity = discord.Streaming(name="The best bot.", url='https://www.twitch.tv/xephirehd')
+
+guild_ids = [806828246418849802, 886604964934344747]
