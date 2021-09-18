@@ -120,6 +120,18 @@ class Music(commands.Cog):
         else:
             return await ctx.send('**There is no song playing to skip**')
 
+    @commands.command(name="stop", aliases=["st"], help="Stops song and clears queue")
+    async def stop(self, ctx):
+        if ctx.message.author.voice is None:
+            return await ctx.send('**You need to be in a voice channel to use this command**')
+        if ctx.message.author.voice.channel.id != ctx.voice_client.channel.id:
+            return await ctx.send('**You need to be in the same voice channel as me to use this command**')
+
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        self.queue[ctx.guild.id] = []
+        voice_client.stop()
+        await ctx.send(':musical_note: **Music stopped and queue cleared** :musical_note:')
+
     @commands.command(name="clearqueue", aliases=["cq"], help="Clears the song queue.")
     async def clearqueue(self, ctx):
         if ctx.message.author.voice is None:
