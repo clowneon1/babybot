@@ -45,7 +45,6 @@ class Music(commands.Cog):
         if not voice_client:
             vc = ctx.author.voice.channel
             await vc.connect()
-            print(3)
             await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
         
         video = get_source.get_source(arg)
