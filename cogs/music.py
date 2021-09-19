@@ -1,5 +1,4 @@
 from discord.ext import commands
-from utils import config
 import discord
 from utils import get_source
 import asyncio
@@ -11,10 +10,6 @@ class Music(commands.Cog):
         self.loop = False
         self.queue = {}
         self.FFMPEG_OPTIONS = {"before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", "options": "-vn"}
-
-
-    async def send_message(self, ctx, message):
-        await ctx.send(message)
 
     def play_next(self, ctx, old_video):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
@@ -47,12 +42,12 @@ class Music(commands.Cog):
         if arg is None and voice_client.is_playing():
             voice_client.pause()
             return await ctx.send(":musical_note: **Song paused** :musical_note:")
-
         if not voice_client:
-            vc = ctx.message.author.voice.channel
+            vc = ctx.author.voice.channel
             await vc.connect()
+            print(3)
             await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
-
+        
         video = get_source.get_source(arg)
         try: self.queue[ctx.guild.id].append(video)
         except Exception: self.queue[ctx.guild.id] = [video]
@@ -69,7 +64,7 @@ class Music(commands.Cog):
 
     @commands.command(name="join", aliases=["j","J"], help="Joins the user's VC")
     async def join(self, ctx):
-        user = ctx.message.author
+        user = ctx.author
         vc = user.voice.channel
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
 
