@@ -3,7 +3,7 @@ import discord
 import random
 from utils import config
 
-class OnReady(commands.Cog):
+class Load(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -48,4 +48,4 @@ class OnReady(commands.Cog):
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=random.choice(statuses)))
 
 def setup(bot):
-    bot.add_cog(OnReady(bot))
+    bot.add_cog(Load(bot))
