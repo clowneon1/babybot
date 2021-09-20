@@ -6,6 +6,7 @@ class OnMessage(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        # empty for future features to be added
         pass
 
 def setup(bot):

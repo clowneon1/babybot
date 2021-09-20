@@ -7,7 +7,7 @@ class Help(commands.Cog):
 
     @commands.command(name='help')
     async def help(self, ctx):
-        em = discord.Embed(title='Help', description='A discord.py multi-use bot, with many useful and fun features.', colour=discord.Color.purple())
+        em = discord.Embed(title='Help', description='A discord.py multi-use bot, with many useful and fun features. [Source code](https://github.com/Xephire/utils-bot-rewrite)', colour=discord.Color.purple())
         em.add_field(name='Join', value='Join the vc that the current user is in')
         em.add_field(name='Leave', value='Leave the vc that the current user is in')
         em.add_field(name='Play', value='Play a song, given either a url or a search term')
