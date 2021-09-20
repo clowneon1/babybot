@@ -1,5 +1,2 @@
 # utils-bot-rewrite
- A multi-purpose Discord bot with music capabilites and administrative capabilites.
-
-Todo:
-Rewrite play command
+ A multi-purpose Discord bot with music and administrative capabilites.

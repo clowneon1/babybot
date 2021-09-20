@@ -85,7 +85,7 @@ class Music(commands.Cog):
             return await ctx.send("**I'm not in a VC!**")
         if voice_client.channel.id is user.voice.channel.id:
             await voice_client.disconnect()
-            self.queue[ctx.guild.id] = {}
+            self.queue[ctx.guild.id] = []
             return await ctx.send(f'**Left** :musical_note: **{ctx.message.author.voice.channel}** :musical_note:')
         if voice_client.channel.id is not user.voice.channel.id:
             return await ctx.send("**You need to be in the same voice channel as me to use this command**")
@@ -124,8 +124,8 @@ class Music(commands.Cog):
             return await ctx.send('**You need to be in the same voice channel as me to use this command**')
 
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-        self.queue[ctx.guild.id] = []
         voice_client.stop()
+        self.queue[ctx.guild.id] = []
         await ctx.send(':musical_note: **Music stopped and queue cleared** :musical_note:')
 
     @commands.command(name="clearqueue", aliases=["cq"], help="Clears the song queue.")
@@ -140,6 +140,22 @@ class Music(commands.Cog):
             await ctx.send(':musical_note: **Queue cleared** :musical_note:')
         else:
             await ctx.send('**Queue is empty**')
+
+    @commands.command(name="queue", aliases=["q","Q"], help="Shows the current.")
+    async def queue(self, ctx):
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice_client is None:
+            return await ctx.send("**I'm not in a VC!**")
+
+        if len(self.queue[ctx.guild.id]) > 0:
+            em = discord.Embed(title='Queue', description='', colour=discord.Color.purple())
+            [em.add_field(name=item[1], value="") for item in self.queue[ctx.guild.id]]
+            await ctx.send(embed=em)
+            
+        else:
+            await ctx.send('**Queue is empty**')
+
+
 
 def setup(bot):
     bot.add_cog(Music(bot))
