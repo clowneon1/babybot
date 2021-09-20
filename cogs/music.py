@@ -11,19 +11,20 @@ class Music(commands.Cog):
         self.queue = {}
         self.FFMPEG_OPTIONS = {"before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", "options": "-vn"}
 
+
     def play_next(self, ctx, old_video):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         try:
             if not self.loop:
                 self.queue[ctx.guild.id].pop(0)
                 if len(self.queue[ctx.guild.id]) > 0:
-                    video = get_source.get_source(self.queue[ctx.guild.id][0])
+                    video = get_source.get_source(self.queue[ctx.guild.id][0][1])
                     voice_client.play(discord.FFmpegPCMAudio(video[0], **self.FFMPEG_OPTIONS), after=lambda e: self.play_next(ctx, video))
-                    asyncio.run(ctx.send(f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:"))
+                    self.bot.loop.create_task(ctx.send(f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:"))
             else:
                 voice_client.play(discord.FFmpegPCMAudio(old_video[0], **self.FFMPEG_OPTIONS), after=lambda e: self.play_next(ctx, old_video))
-                asyncio.run(ctx.send(f":musical_note: **{old_video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:"))
-        except TypeError:
+                self.bot.loop.create_task(ctx.send(f":musical_note: **{old_video[1]}** :musical_note: is now playing in **{ctx.message.author.voice.channel}**"))
+        except Exception:
             pass
 
     @commands.command(name="play", aliases=["p","P"], help="Either plays or adds to queue the given YouTube link or search term.")
@@ -42,7 +43,7 @@ class Music(commands.Cog):
         if arg is None and voice_client.is_playing():
             voice_client.pause()
             return await ctx.send(":musical_note: **Song paused** :musical_note:")
-            
+
         if not voice_client:
             vc = ctx.author.voice.channel
             await vc.connect()
@@ -57,8 +58,7 @@ class Music(commands.Cog):
             try:
                 voice_client.play(discord.FFmpegPCMAudio(video[0], **self.FFMPEG_OPTIONS), after=lambda e: self.play_next(ctx, video))
                 return await ctx.send(f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:")
-            except Exception as e:
-                print(e)
+            except Exception:
                 return await ctx.send("**There was an error playing your song**")
         else:
             return await ctx.send(f':musical_note: **{video[1]}** :musical_note: **was added to the queue**')
@@ -86,6 +86,7 @@ class Music(commands.Cog):
             return await ctx.send("**I'm not in a VC!**")
         if voice_client.channel.id is user.voice.channel.id:
             await voice_client.disconnect()
+            self.queue[ctx.guild.id] = {}
             return await ctx.send(f'**Left** :musical_note: **{ctx.message.author.voice.channel}** :musical_note:')
         if voice_client.channel.id is not user.voice.channel.id:
             return await ctx.send("**You need to be in the same voice channel as me to use this command**")
