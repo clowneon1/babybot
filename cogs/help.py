@@ -23,4 +23,4 @@ class Help(commands.Cog):
         await ctx.send(embed = em)
 
 def setup(bot):
-    bot.add_cog(Help(bot))  
+    bot.add_cog(Help(bot))
