@@ -1,7 +1,6 @@
 from discord.ext import commands
 import discord
 from utils import get_source
-import asyncio
 
 class Music(commands.Cog):
     def __init__(self, bot):
