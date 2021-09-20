@@ -9,8 +9,9 @@ class OnCommandError(commands.Cog):
     async def on_command_error(self, ctx, error):
         """Empty in case it needs something added."""
         if isinstance(error, discord.ext.commands.errors.CommandNotFound):
-            # empty to stop errors being thrown when someone types a command wrong
-            pass
+            return
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send('**Please pass in all required arguments**')
 
 def setup(bot): 
     bot.add_cog(OnCommandError(bot))
