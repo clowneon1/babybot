@@ -42,9 +42,11 @@ class Music(commands.Cog):
         if arg is None and voice_client.is_playing():
             voice_client.pause()
             return await ctx.send(":musical_note: **Song paused** :musical_note:")
+            
         if not voice_client:
             vc = ctx.author.voice.channel
             await vc.connect()
+            voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
             await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
         
         video = get_source.get_source(arg)
