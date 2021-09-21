@@ -78,17 +78,18 @@ class Music(commands.Cog):
 
     @commands.command(name="leave", aliases=["l","L"], help="Leaves the user's VC")
     async def leave(self, ctx):
+        user = ctx.message.author
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         
-        if ctx.message.author.voice is None:
+        if user.voice is None:
             return await ctx.send("**You need to be in a voice channel to use this command**")
         if voice_client is None:
             return await ctx.send("**I'm not in a VC!**")
-        if voice_client.channel.id is ctx.message.author.voice.channel.id:
+        if voice_client.channel.id is user.voice.channel.id:
             await voice_client.disconnect()
             self.queue[ctx.guild.id] = []
             return await ctx.send(f':musical_note: **Left** **{ctx.message.author.voice.channel}**')
-        if voice_client.channel.id is not ctx.message.author.voice.channel.id:
+        if voice_client.channel.id is not user.voice.channel.id:
             return await ctx.send("**You need to be in the same voice channel as me to use this command**")
 
     @commands.command(name="loop", aliases=["lp"], help="Toggles looping songs on and off.")
@@ -116,9 +117,8 @@ class Music(commands.Cog):
             return await ctx.send('**You need to be in the same voice channel as me to use this command**')
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         if voice_client.is_playing():
-            self.loop[ctx.guild.id] = False
             voice_client.stop()
-            return await ctx.send(f':musical_note: **Song skipped, looping is OFF** :musical_note:')
+            return await ctx.send(f':musical_note: **Song skipped, looping is {"ON" if self.loop else "OFF"}** :musical_note:')
         else:
             return await ctx.send('**There is no song playing to skip**')
 
