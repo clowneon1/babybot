@@ -89,6 +89,14 @@ python-versions = "*"
 "discord.py" = ">=1.7.3"
 
 [[package]]
+name = "discord-voice"
+version = "0.1.0"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+
+[[package]]
 name = "discord.py"
 version = "1.7.3"
 description = "A Python wrapper for the Discord API"
@@ -241,7 +249,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "64ecba5a42bf7ac3a071e7fdbb538b8d36f0e6898ae19355bed70de527fad6e5"
+content-hash = "ba3278d3a8bbc7758a771dfd8c5142e1e4c754a727a96cf9609a3b415aa8f2e5"
 
 [metadata.files]
 aiohttp = [
@@ -353,6 +361,10 @@ colorama = [
 discord = [
     {file = "discord-1.7.3-py3-none-any.whl", hash = "sha256:248d728356e149c818a81b94659047a19305ea1623d4810bbb342f6b7df55f36"},
     {file = "discord-1.7.3.tar.gz", hash = "sha256:846dd3d66888c2e0a8bd9120d8778a0fe088c003a7f6451668497f14e322a304"},
+]
+discord-voice = [
+    {file = "discord-voice-0.1.0.tar.gz", hash = "sha256:ee0d1dabd4b46819349063cd8abbddf54a65c0e13889c963c181183a6c81dd50"},
+    {file = "discord_voice-0.1.0-py3-none-any.whl", hash = "sha256:ce04b06d7f4ec866bea9568f8f79c02094579c0b185cc8cf90746d9bd8b9d95d"},
 ]
 "discord.py" = [
     {file = "discord.py-1.7.3-py3-none-any.whl", hash = "sha256:c6f64db136de0e18e090f6752ea68bdd4ab0a61b82dfe7acecefa22d6477bb0c"},

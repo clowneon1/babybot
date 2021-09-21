@@ -12,7 +12,7 @@ class Music(commands.Cog):
     def play_next(self, ctx, old_video):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         try:
-            if not self.loop:
+            if not self.loop[ctx.guild.id]:
                 self.queue[ctx.guild.id].pop(0)
                 if len(self.queue[ctx.guild.id]) > 0:
                     video = self.queue[ctx.guild.id][0]
@@ -96,10 +96,10 @@ class Music(commands.Cog):
     async def loop(self, ctx, arg : str=None):
         if arg is None and ctx.guild.id in self.loop.keys():
             self.loop[ctx.guild.id] = not self.loop[ctx.guild.id]
-            return await ctx.send(f"**Looping set to {self.loop}**")
+            return await ctx.send(f"**Looping set to {self.loop[ctx.guild.id]}**")
         elif arg is None and ctx.guild.id not in self.loop.keys():
             self.loop[ctx.guild.id] = True
-            return await ctx.send(f"**Looping set to {self.loop}**")
+            return await ctx.send(f"**Looping set to {self.loop[ctx.guild.id]}**")
 
         if arg in ["true","TRUE","True", "1"]:
             self.loop[ctx.guild.id] = True
