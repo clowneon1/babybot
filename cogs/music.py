@@ -49,8 +49,10 @@ class Music(commands.Cog):
             await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
         
         video = get_source.get_source(arg)
-        try: self.queue[ctx.guild.id].append(video)
-        except Exception: self.queue[ctx.guild.id] = [video]
+        if ctx.guild.id not in self.queue.keys():
+            self.queue[ctx.guild.id] = [video]
+        else:
+            self.queue[ctx.guild.id].append(video)
 
         if not voice_client.is_playing() and not voice_client.is_paused():
             try:
