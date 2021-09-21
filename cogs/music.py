@@ -6,7 +6,7 @@ class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        self.loop = False
+        self.loop = {}
         self.queue = {}
 
     def play_next(self, ctx, old_video):
@@ -42,6 +42,7 @@ class Music(commands.Cog):
             return await ctx.send(":musical_note: **Song paused** :musical_note:")
 
         if not voice_client:
+            self.loop[ctx.guild.id] = False
             vc = ctx.author.voice.channel
             await vc.connect()
             voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
@@ -67,6 +68,7 @@ class Music(commands.Cog):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
 
         if voice_client is None:
+            self.loop[ctx.guild.id] = False
             await vc.connect()
             return await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
         else:
@@ -90,14 +92,18 @@ class Music(commands.Cog):
 
     @commands.command(name="loop", aliases=["lp"], help="Toggles looping songs on and off.")
     async def loop(self, ctx, arg : str=None):
-        if arg is None:
-            self.loop = not self.loop
+        if arg is None and ctx.guild.id in self.loop.keys():
+            self.loop[ctx.guild.id] = not self.loop[ctx.guild.id]
             return await ctx.send(f"**Looping set to {self.loop}**")
+        elif arg is None and ctx.guild.id not in self.loop.keys():
+            self.loop[ctx.guild.id] = True
+            return await ctx.send(f"**Looping set to {self.loop}**")
+
         if arg in ["true","TRUE","True", "1"]:
-            self.loop = True
+            self.loop[ctx.guild.id] = True
             return await ctx.send("**Looping set to True**")
         if arg in ["false","FALSE","False","0"]:
-            self.loop = False
+            self.loop[ctx.guild.id] = False
             return await ctx.send("**Looping set to False**")
 
 
