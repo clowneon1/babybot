@@ -153,12 +153,13 @@ class Music(commands.Cog):
         if voice_client is None:
             return await ctx.send("**I'm not in a VC!**")
 
-        if len(self.queue[ctx.guild.id]) > 0:
+        if len(self.queue[ctx.guild.id]) > 1:
             em = discord.Embed(title='Queue', colour=discord.Color.purple())
-            [em.add_field(name="\u200b", value=item[1], inline=False) for item in self.queue[ctx.guild.id]]
+            [em.add_field(name="\u200b", value=item[1], inline=False) for item in self.queue[ctx.guild.id] if item.index() != 0]
             await ctx.send(embed=em)
         else:
-            await ctx.send('**Queue is empty**')
+            em = discord.Embed(title='Queue is empty', colour=discord.Color.purple())
+            await ctx.send(embed=em)
 
 def setup(bot):
     bot.add_cog(Music(bot))
