@@ -266,15 +266,16 @@ class Music(commands.Cog):
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
             return await ctx.send(embed=em)
-
-        if len(self.queue[ctx.guild.id]) > 1:
-            em = discord.Embed(title="Queue", colour=discord.Color.purple())
-            [em.add_field(name="\u200b", value=item[1], inline=False) for item in self.queue[ctx.guild.id] if item.index() != 0]
+        
+        if ctx.guild.id not in self.queue.keys() or len(self.queue[ctx.guild.id]) < 2:
+            em = discord.Embed(title="Queue is empty", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
             return await ctx.send(embed=em)
-        else:
-            em = discord.Embed(title="Queue is empty", colour=discord.Color.purple())
+
+        if len(self.queue[ctx.guild.id]) > 1:
+            em = discord.Embed(title="Queue", colour=discord.Color.purple())
+            [em.add_field(name=item[1], value="\u200b", inline=False) for item in self.queue[ctx.guild.id][1:]]
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
             return await ctx.send(embed=em)

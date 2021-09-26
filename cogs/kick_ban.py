@@ -49,7 +49,7 @@ class KickBan(commands.Cog):
             return ctx.send(f'**{user.mention}** could not be banned, they have higher or equal roles to you.')
 
         try:
-            await user.ban(reason=reason)
+            await user.ban(reason=str(reason))
         except discord.errors.Forbidden:
             return await ctx.send(f'**{user.display_name}** could not be banned.')
 
