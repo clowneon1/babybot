@@ -148,7 +148,7 @@ class Music(commands.Cog):
         if voice_client.channel.id is ctx.message.author.voice.channel.id:
             await voice_client.disconnect()
             self.queue[ctx.guild.id] = []
-            em = discord.Embed(title=":musical_note: **Left** **{ctx.message.author.voice.channel}**", colour=discord.Color.purple())
+            em = discord.Embed(title=f":musical_note: **Left** **{ctx.message.author.voice.channel}**", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
             
             return await ctx.send(embed=em)
