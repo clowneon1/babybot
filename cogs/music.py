@@ -115,7 +115,7 @@ class Music(commands.Cog):
             self.loop[ctx.guild.id] = False
             await vc.connect()
 
-            em = discord.Embed(title=f"Joined :musical_note: **{vc}** :musical_note:", colour=discord.Color.purple())
+            em = discord.Embed(title=f":musical_note: Joined **{vc}**", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
             return await ctx.send(embed=em)
