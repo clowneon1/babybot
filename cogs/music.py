@@ -228,7 +228,10 @@ class Music(commands.Cog):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         voice_client.stop()
         self.queue[ctx.guild.id] = []
-        await ctx.send(':musical_note: **Music stopped and queue cleared** :musical_note:')
+        em = discord.Embed(title=":musical_note: **Music stopped and queue cleared** :musical_note:", colour=discord.Color.purple())
+        em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+        await ctx.send(embed=em)
 
     @commands.command(name="clearqueue", aliases=["cq"], help="Clears the song queue.")
     async def clearqueue(self, ctx):
@@ -265,7 +268,7 @@ class Music(commands.Cog):
             return await ctx.send(embed=em)
 
         if len(self.queue[ctx.guild.id]) > 1:
-            em = discord.Embed(title='Queue', colour=discord.Color.purple())
+            em = discord.Embed(title="Queue", colour=discord.Color.purple())
             [em.add_field(name="\u200b", value=item[1], inline=False) for item in self.queue[ctx.guild.id] if item.index() != 0]
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
