@@ -17,36 +17,57 @@ class Music(commands.Cog):
                 if len(self.queue[ctx.guild.id]) > 0:
                     video = self.queue[ctx.guild.id][0]
                     voice_client.play(video[0], after=lambda e: self.play_next(ctx, video))
-                    self.bot.loop.create_task(ctx.send(f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:"))
+                    em = discord.Embed(title=f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:",
+                        colour=discord.Color.purple())
+                    em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+                    self.bot.loop.create_task(ctx.send(embed=em))
             else:
                 voice_client.play(old_video[0], after=lambda e: self.play_next(ctx, old_video))
-                self.bot.loop.create_task(ctx.send(f":musical_note: **{old_video[1]}** :musical_note: is now playing in **{ctx.message.author.voice.channel}**"))
+                em = discord.Embed(title=f":musical_note: **{old_video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:",
+                    colour=discord.Color.purple())
+                em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+                self.bot.loop.create_task(ctx.send(embed=em))
         except Exception:
             pass
 
     @commands.command(name="play", aliases=["p","P"], help="Either plays or adds to queue the given YouTube link or search term.")
     async def play(self, ctx, *, arg : str = None):
+        joined = False
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         if ctx.message.author.voice is None:
-            return await ctx.send("**You need to be in a voice channel to use this command**")
+            em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
 
         if voice_client and voice_client.channel.id is not ctx.author.voice.channel.id:
-            return await ctx.send("**You need to be in the same voice channel as me to use this command**")
+            em = discord.Embed(title="**You need to be in the same voice channel as me to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
 
         if arg is None and voice_client.is_paused():
             voice_client.resume()
-            return await ctx.send(":musical_note: **Song resumed** :musical_note:")
+            em = discord.Embed(title=":musical_note: **Song resumed** :musical_note:", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
 
         if arg is None and voice_client.is_playing():
             voice_client.pause()
-            return await ctx.send(":musical_note: **Song paused** :musical_note:")
+            em = discord.Embed(title=":musical_note: **Song paused** :musical_note:", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
 
         if not voice_client:
+            joined = True
             self.loop[ctx.guild.id] = False
             vc = ctx.author.voice.channel
             await vc.connect()
             voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-            await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
         
         video = get_source.get_source(arg)
         if ctx.guild.id not in self.queue.keys():
@@ -57,11 +78,32 @@ class Music(commands.Cog):
         if not voice_client.is_playing() and not voice_client.is_paused():
             try:
                 voice_client.play(video[0], after=lambda e: self.play_next(ctx, video))
-                return await ctx.send(f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:")
-            except Exception:
-                return await ctx.send("**There was an error playing your song**")
+
+                if joined:
+                    em = discord.Embed(title=f"Joined :musical_note: **{vc}** :musical_note:",
+                        description=f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:",
+                        colour=discord.Color.purple())
+                    em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+                    return await ctx.send(embed=em)
+
+                else:
+                    em = discord.Embed(title=f":musical_note: **{video[1]}** :musical_note: is now playing in :musical_note: **{ctx.message.author.voice.channel}** :musical_note:", 
+                        colour=discord.Color.purple())
+                    em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+                    return await ctx.send(embed=em)
+
+            except Exception as e:
+                print(e)
+                em = discord.Embed(title="**There was an error playing your song**", colour=discord.Color.purple())
+                em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+                return await ctx.send(embed=em)
         else:
-            return await ctx.send(f':musical_note: **{video[1]}** :musical_note: **was added to the queue**')
+            em = discord.Embed(title=f":musical_note: **{video[1]}** :musical_note: **was added to the queue**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=em)
 
     @commands.command(name="join", aliases=["j","J"], help="Joins the user's VC")
     async def join(self, ctx):
@@ -72,62 +114,116 @@ class Music(commands.Cog):
         if voice_client is None:
             self.loop[ctx.guild.id] = False
             await vc.connect()
-            return await ctx.send(f"Joined :musical_note: **{vc}** :musical_note:")
+
+            em = discord.Embed(title=f"Joined :musical_note: **{vc}** :musical_note:", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
         else:
-            return await ctx.send("**I'm already in a VC!**")
+            em = discord.Embed(title="**I'm already in a VC!", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=em)
 
     @commands.command(name="leave", aliases=["l","L"], help="Leaves the user's VC")
     async def leave(self, ctx):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-        
         if ctx.message.author.voice is None:
-            return await ctx.send("**You need to be in a voice channel to use this command**")
+            em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
+
+        if ctx.message.author.voice.channel.id != ctx.voice_client.channel.id:
+            em = discord.Embed(title="**You need to be in the same voice channel as me to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
+
         if voice_client is None:
-            return await ctx.send("**I'm not in a VC!**")
+            em = discord.Embed(title="**I'm not in a VC!**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
+
         if voice_client.channel.id is ctx.message.author.voice.channel.id:
             await voice_client.disconnect()
             self.queue[ctx.guild.id] = []
-            return await ctx.send(f':musical_note: **Left** **{ctx.message.author.voice.channel}**')
-        if voice_client.channel.id is not ctx.message.author.voice.channel.id:
-            return await ctx.send("**You need to be in the same voice channel as me to use this command**")
+            em = discord.Embed(title=":musical_note: **Left** **{ctx.message.author.voice.channel}**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
 
     @commands.command(name="loop", aliases=["lp"], help="Toggles looping songs on and off.")
     async def loop(self, ctx, arg : str=None):
+        if ctx.message.author.voice is None:
+            em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
+
+        if ctx.message.author.voice.channel.id != ctx.voice_client.channel.id:
+            em = discord.Embed(title="**You need to be in the same voice channel as me to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
+            
         if arg is None and ctx.guild.id in self.loop.keys():
             self.loop[ctx.guild.id] = not self.loop[ctx.guild.id]
-            return await ctx.send(f"**Looping set to {self.loop[ctx.guild.id]}**")
+
         elif arg is None and ctx.guild.id not in self.loop.keys():
             self.loop[ctx.guild.id] = True
-            return await ctx.send(f"**Looping set to {self.loop[ctx.guild.id]}**")
 
-        if arg in ["true","TRUE","True", "1"]:
+        elif arg in ["true","TRUE","True", "1"]:
             self.loop[ctx.guild.id] = True
-            return await ctx.send("**Looping set to True**")
-        if arg in ["false","FALSE","False","0"]:
+
+        elif arg in ["false","FALSE","False","0"]:
             self.loop[ctx.guild.id] = False
-            return await ctx.send("**Looping set to False**")
+
+        em = discord.Embed(title=f"**Looping set to {self.loop[ctx.guild.id]}**", colour=discord.Color.purple())
+        em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+        return await ctx.send(embed=em)
 
 
     @commands.command(name="skip", aliases=["s","S"], help="Skips the currently playing song")
     async def skip(self, ctx):
         if ctx.message.author.voice is None:
-            return await ctx.send('**You need to be in a voice channel to use this command**')
+            em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
         if ctx.message.author.voice.channel.id != ctx.voice_client.channel.id:
-            return await ctx.send('**You need to be in the same voice channel as me to use this command**')
+            em = discord.Embed(title="**You need to be in the same voice channel as me to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
+
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         if voice_client.is_playing():
             self.loop[ctx.guild.id] = False
             voice_client.stop()
-            return await ctx.send(f':musical_note: **Song skipped, looping is OFF** :musical_note:')
+            em = discord.Embed(title=":musical_note: **Song skipped, looping is OFF** :musical_note:", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
         else:
-            return await ctx.send('**There is no song playing to skip**')
+            em = discord.Embed(title="**There is no song playing to skip**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
 
     @commands.command(name="stop", aliases=["st"], help="Stops song and clears queue")
     async def stop(self, ctx):
         if ctx.message.author.voice is None:
-            return await ctx.send('**You need to be in a voice channel to use this command**')
+            em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
         if ctx.message.author.voice.channel.id != ctx.voice_client.channel.id:
-            return await ctx.send('**You need to be in the same voice channel as me to use this command**')
+            em = discord.Embed(title="**You need to be in the same voice channel as me to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
 
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         voice_client.stop()
@@ -137,29 +233,48 @@ class Music(commands.Cog):
     @commands.command(name="clearqueue", aliases=["cq"], help="Clears the song queue.")
     async def clearqueue(self, ctx):
         if ctx.message.author.voice is None:
-            return await ctx.send('**You need to be in a voice channel to use this command**')
+            em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
         if ctx.message.author.voice.channel.id != ctx.voice_client.channel.id:
-            return await ctx.send('**You need to be in the same voice channel as me to use this command**')
+            em = discord.Embed(title="**You need to be in the same voice channel as me to use this command**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
         
         if len(self.queue[ctx.guild.id]) > 0:
             self.queue[ctx.guild.id] = []
-            await ctx.send(':musical_note: **Queue cleared** :musical_note:')
+            em = discord.Embed(title=":musical_note: **Queue cleared** :musical_note:", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
         else:
-            await ctx.send('**Queue is empty**')
+            em = discord.Embed(title="**Queue is empty**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            
+            return await ctx.send(embed=em)
 
     @commands.command(name="queue", aliases=["q","Q"], help="Shows the current.")
     async def queue(self, ctx):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         if voice_client is None:
-            return await ctx.send("**I'm not in a VC!**")
+            em = discord.Embed(title="**I'm not in a VC!**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
 
         if len(self.queue[ctx.guild.id]) > 1:
             em = discord.Embed(title='Queue', colour=discord.Color.purple())
             [em.add_field(name="\u200b", value=item[1], inline=False) for item in self.queue[ctx.guild.id] if item.index() != 0]
-            await ctx.send(embed=em)
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
         else:
-            em = discord.Embed(title='Queue is empty', colour=discord.Color.purple())
-            await ctx.send(embed=em)
+            em = discord.Embed(title="Queue is empty", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+
+            return await ctx.send(embed=em)
 
 def setup(bot):
     bot.add_cog(Music(bot))
