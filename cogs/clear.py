@@ -32,7 +32,7 @@ class Clear(commands.Cog):
             await asyncio.sleep(3)
             await delMsg.delete()
         else:
-            em = discord.Embed(title=f"{ctx.author.mention} please specify a valid number of messages to delete", colour=discord.Color.purple())
+            em = discord.Embed(title=f"Please specify a valid number of messages to delete", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
             return await ctx.send(embed=em)
