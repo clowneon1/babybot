@@ -1,16 +1,12 @@
-from discord.ext import commands
-import discord
-from utils import config
-from utils import keep_alive
+from utils import keep_alive, bot
 import os
 
-bot = commands.Bot(command_prefix=config.prefix, activity=config.starting_activity, intents=discord.Intents.all(), help_command=None)
-
-for filename in os.listdir("./cogs"):
-    if filename.endswith(".py"):
-        bot.load_extension(f"cogs.{filename[:-3]}")
-
+bot = bot.Bot()
 TOKEN = os.environ.get("TOKEN")
 
-keep_alive.keep_alive()
-bot.run(TOKEN)
+def main():
+    keep_alive.keep_alive()
+    bot.run(TOKEN)
+
+if __name__=="__main__":
+    main()
