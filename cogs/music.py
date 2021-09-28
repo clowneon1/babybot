@@ -10,6 +10,9 @@ class Music(commands.Cog):
         self.queue = {}
 
     def play_next(self, ctx, old_video):
+        if not ctx.guild.id in self.loop.keys():
+            self.loop[ctx.guild.id] = False
+
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
         try:
             if not self.loop[ctx.guild.id]:
@@ -224,13 +227,21 @@ class Music(commands.Cog):
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
             
             return await ctx.send(embed=em)
-
+            
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+
+        if not voice_client.is_playing():
+            self.queue[ctx.guild.id] = []
+
+            em = discord.Embed(title=":musical_note: **No sound is playing!** :musical_note:", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=em)
+
         voice_client.stop()
         self.queue[ctx.guild.id] = []
+
         em = discord.Embed(title=":musical_note: **Music stopped and queue cleared** :musical_note:", colour=discord.Color.purple())
         em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
-
         await ctx.send(embed=em)
 
     @commands.command(name="clearqueue", aliases=["cq"], help="Clears the song queue.")
