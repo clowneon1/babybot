@@ -21,7 +21,6 @@ class Help(commands.Cog):
         em.add_field(name="Kick", value="Kicks a user")
         em.add_field(name="Unban", value="Unbans a user")
         em.add_field(name="Clear", value="Clears the channel by either a certain number of messages, or left blank, the whole channel")
-        em.add_field(name="GayRate",value="Rates a user's 'gayness'")
         await ctx.send(embed = em)
 
 def setup(bot):
