@@ -17,7 +17,7 @@ class GuessSong(commands.Cog):
 
         joined = False
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-        if ctx.message.author.voice is None:
+        if ctx.author.voice is None:
             em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
             
@@ -59,14 +59,14 @@ class GuessSong(commands.Cog):
 
                 if joined:
                     em = discord.Embed(title=f"Joined :musical_note: **{vc}** :musical_note:",
-                        description=f":musical_note: Song started! :musical_note: **{ctx.message.author.voice.channel}** :musical_note:",
+                        description=f":musical_note: Song started! :musical_note: **{ctx.author.voice.channel}** :musical_note:",
                         colour=discord.Color.purple())
                     em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
                     
                     return await ctx.send(embed=em)
 
                 else:
-                    em = discord.Embed(title=f":musical_note: Song started! :musical_note: **{ctx.message.author.voice.channel}** :musical_note:", 
+                    em = discord.Embed(title=f":musical_note: Song started! :musical_note: **{ctx.author.voice.channel}** :musical_note:", 
                         colour=discord.Color.purple())
                     em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
 
@@ -83,7 +83,7 @@ class GuessSong(commands.Cog):
     async def guess_song(self, ctx, arg : str = None):
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
 
-        if ctx.message.author.voice is None:
+        if ctx.author.voice is None:
             em = discord.Embed(title="**You need to be in a voice channel to use this command**", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
             
