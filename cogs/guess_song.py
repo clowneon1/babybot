@@ -112,6 +112,11 @@ class GuessSong(commands.Cog):
 
     @commands.command(name="endgame", aliases=["eg","EG"], help="Ends the current game of guess the song")
     async def end_game(self, ctx, winner : discord.Member = None):
+        if not self.game_playing:
+            em = discord.Embed(title="**No game is currently playing!**", colour=discord.Color.purple())
+            em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+            return await ctx.send(embed=em)
+            
         if ctx.author.id != self.game_master:
             em = discord.Embed(title="**You are not the game master!**", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
