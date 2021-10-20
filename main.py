@@ -3,10 +3,9 @@ from utils.bot import Bot
 import os
 
 
-bot = Bot()
-TOKEN = os.environ.get("TOKEN")
-
 def main():
+    bot = Bot()
+    TOKEN = os.environ.get("TOKEN")
     keep_alive()
     bot.run(TOKEN)
 
