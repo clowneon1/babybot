@@ -123,7 +123,7 @@ class Music(commands.Cog):
 
             return await ctx.send(embed=em)
         else:
-            em = discord.Embed(title="**I'm already in a VC!", colour=discord.Color.purple())
+            em = discord.Embed(title="I'm already in a VC!", colour=discord.Color.purple())
             em.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
             return await ctx.send(embed=em)
 
