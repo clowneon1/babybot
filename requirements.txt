@@ -3,3 +3,4 @@ youtube_dl
 PyNaCl
 discord
 discord.py
+ffmpeg
