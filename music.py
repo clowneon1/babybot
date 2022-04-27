@@ -64,14 +64,14 @@ class music(commands.Cog):
     async def stop(self,ctx):
         voice = ctx.voice_client
         voice.stop()
-        await ctx.send('Bot stopped')
+        await ctx.send('Music stopped')
         
     @commands.command()
     async def leave(self,ctx):
         voice = ctx.voice_client
         if voice.is_connected():
             await voice.disconnect()
-            await ctx.send('Music stopped.')  
+            await ctx.send('Disconnected.')  
         else:
             await ctx.send('The bot is not connected to a voice channel.')  
     

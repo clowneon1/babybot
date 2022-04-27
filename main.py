@@ -14,14 +14,9 @@ import time
 import music
 
 cogs = [music]
-my_secret = os.environ['Token']
 client = commands.Bot(command_prefix='/', intents = discord.Intents.all())
 
 for i in range(len(cogs)):
     cogs[i].setup(client)
 
-client.run(my_secret)]
-
-
-
-
+client.run(os.environ['Token'])
