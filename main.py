@@ -1,3 +1,4 @@
+import os
 import asyncio
 from contextlib import AsyncExitStack
 from dis import disco
@@ -13,13 +14,13 @@ import time
 import music
 
 cogs = [music]
-
+my_secret = os.environ['Token']
 client = commands.Bot(command_prefix='/', intents = discord.Intents.all())
 
 for i in range(len(cogs)):
     cogs[i].setup(client)
 
-client.run("OTY4NTYyMTc5ODQ0NTA1NjQw.Ymgp0g.veq5HizVcXu_mV60ctXJup7NigA")
+client.run(my_secret)]
 
 
 
